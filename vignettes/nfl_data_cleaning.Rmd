@@ -20,7 +20,7 @@ library(rlang)
 ```
 
 ```{r setup}
-library(project2)
+library(whiskerTrimmer)
 ```
 
 #Introduction
