@@ -11,13 +11,6 @@
 
 # Ensure data is a data frame
 
-na_validate <- function(func, data) {
-  if (!is.data.frame(data)) {
-    stop("Input must be a data frame.")
-  }
-  func(data)
-}
-
 na_summary <- function(data) {
   # Ensure data is a data frame
   if (!is.data.frame(data)) {
@@ -70,37 +63,32 @@ na_summary <- function(data) {
   return(results_tibble)
 }
 
-na_validate(na_summary, data)
 
 #This functions enables you to visualize the numeric data
 # It returns a plot that shows the distribution (histogram) of each of the columns
 # it also computes all the outliers using the z-score and shows them in red
-visualize_outliers <- function(data, ..., z_threshold = 3) {
-  library(dplyr)
-  library(ggplot2)
-  library(patchwork)
-  
+visualize_outliers <- function(df, ..., z_threshold = 3) {
   # Capture the column names passed as arguments
   columns <- enquos(...)
-  
+
   # Check if at least two columns are provided
   if (length(columns) < 2) {
     stop("At least two columns must be specified.")
   }
-  
+
   # Select the specified columns
-  selected_data <- data %>%
+  selected_data <- df %>%
     select(!!!columns)
-  
+
   # Convert all columns to numeric
   numeric_data <- selected_data %>%
     mutate(across(everything(), ~ as.numeric(.), .names = "{col}"))
-  
+
   # Check for non-convertible columns
   if (any(sapply(numeric_data, function(col) all(is.na(col))))) {
     stop("One or more columns could not be converted to numeric. Check for non-numeric values.")
   }
-  
+
   # Add an outlier flag for each numeric column
   numeric_data <- numeric_data %>%
     mutate(across(
@@ -111,14 +99,14 @@ visualize_outliers <- function(data, ..., z_threshold = 3) {
       ),
       .names = "outlier_{col}"
     ))
-  
+
   # Get column names for looping
   column_names <- colnames(selected_data)
   n <- length(column_names)
-  
+
   # Initialize an empty matrix to store plots
   plots <- matrix(list(), n, n)
-  
+
   # Generate plots
   for (i in seq_len(n)) {
     for (j in seq_len(n)) {
@@ -134,7 +122,7 @@ visualize_outliers <- function(data, ..., z_threshold = 3) {
         x_var <- column_names[j]
         y_var <- column_names[i]
         y_outlier_col <- paste0("outlier_", y_var)
-        
+
         # Scatterplot with outliers in red
         p <- ggplot(numeric_data, aes(x = .data[[x_var]], y = .data[[y_var]])) +
           geom_point(aes(color = .data[[y_outlier_col]]), alpha = 0.7) +
@@ -147,28 +135,30 @@ visualize_outliers <- function(data, ..., z_threshold = 3) {
       plots[i, j] <- list(p)
     }
   }
-  
+
   # Combine plots into a grid using patchwork
   plot_grid <- wrap_plots(plots, byrow = FALSE)
-  
+
   return(plot_grid)
 }
-visualize_outliers(data, "yardsToGo", "PassLength", "YardsAfterCatch")
+visualize_outliers(df, "yardsToGo", "PassLength", "YardsAfterCatch")
 
 #NFL data idiosyncrasy: the numbering only goes up to 50 yards and then switches when you get to opponents side.
 #This computes the "true yardline"
 true_yardline <- function(data, possession_col, yardline_side_col, yardline_number_col) {
-  # Check if input is a data frame
+  # Ensure the input is a data frame
   if (!is.data.frame(data)) {
-    stop("Input data must be a data frame.")
+    stop(paste(
+      "Input data must be a data frame. The input type is:", class(data)[1]
+    ))
   }
-  
+
   # Ensure required columns are in the data
   if (!all(c(possession_col, yardline_side_col, yardline_number_col) %in% colnames(data))) {
     missing_cols <- setdiff(c(possession_col, yardline_side_col, yardline_number_col), colnames(data))
     stop(paste("The following columns are missing from the data:", paste(missing_cols, collapse = ", ")))
   }
-  
+
   # Calculate true yardline
   yardline <- data %>%
     mutate(
@@ -179,9 +169,7 @@ true_yardline <- function(data, possession_col, yardline_side_col, yardline_numb
       )
     ) %>%
     select(yardline) # Select only the "true_yardline" column
-  
+
   return(as_tibble(yardline))
 }
-true_yardline(data, "possessionTeam", "yardlineSide", "yardlineNumber")
-
-
+true_yardline(df, "possessionTeam", "yardlineSide", "yardlineNumber")
