@@ -1,4 +1,4 @@
-fix_gender_pattern <- function(data, column_name) {
+fix_gender_pattern <- function(data, column_name = "ID") {
   # Ensure the specified column exists
   if (!column_name %in% colnames(data)) {
     stop("Specified column does not exist in the data.")

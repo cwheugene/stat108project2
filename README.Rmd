@@ -98,19 +98,14 @@ The function automatically merges the three Excel sheets into a tidy dataset rea
 
 ## Step 2: Generate Statistical Summaries
 
-# to be edited
-
 Use built-in functions to summarise data:
 	•	Create a summary table of weight changes by treatment group:
 
-summary_table <- summarize_weights(cleaned_data)
+```{r, eval=FALSE}
+summary_table <- generate_summary_table(cleaned_data)
 print(summary_table)
+```
 
-
-	•	Flag and view significant weight changes:
-
-flagged_data <- flag_weight_loss(cleaned_data)
-View(flagged_data)
 
 ## Step 3: Create Visualistions
 
@@ -119,25 +114,9 @@ Visualize trends in the data, such as weight changes over time, using built-in p
 Plot weight trends by treatment group
 
 ```{r, eval = FALSE}
-plot_weight_trends(cleaned_data)
+plot_body_weight(cleaned_data)
 ```
 
 # Support
 
-If you encounter any issues or have questions, please submit a GitHub issue in the repository or contact the maintainer at your_email@example.com.
-
-What is special about using `README.Rmd` instead of just `README.md`? You can include R chunks like so:
-
-```{r cars}
-summary(cars)
-```
-
-You'll still need to render `README.Rmd` regularly, to keep `README.md` up-to-date. `devtools::build_readme()` is handy for this.
-
-You can also embed plots, for example:
-
-```{r pressure, echo = FALSE}
-plot(pressure)
-```
-
-In that case, don't forget to commit and push the resulting figure files, so they display on GitHub and CRAN.
+If you encounter any issues or have questions, please submit a GitHub issue in the repository or contact the maintainer at eugeneweiheng@college.harvard.edu

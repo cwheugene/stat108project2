@@ -66,7 +66,7 @@ install.packages("devtools")
 2.  Install the Mouse Vaccine Trial package from GitHub:
 
 ``` r
-devtools::install_github("cwheugene/whiskerTrimmer")
+devtools::install_github("cwheugene/stat108project2")
 ```
 
 3.  Load the package in your R session:
@@ -100,7 +100,8 @@ The data can be cleaned and viewed with the following code:
 ``` r
 
 # Set up the file path to the Excel document
-file_path <- "data-raw/mousedata.xlsx"
+# The actual file path will follow this structure, but might be in a different location.
+file_path <- "~username/Downloads/mousedata.xlsx"
 
 # Clean the data with the function in the package
 cleaned_data <- clean_mouse_data(file_path)
@@ -114,16 +115,13 @@ dataset ready for analysis.
 
 ## Step 2: Generate Statistical Summaries
 
-# to be edited
-
 Use built-in functions to summarise data: • Create a summary table of
 weight changes by treatment group:
 
-summary_table \<- summarize_weights(cleaned_data) print(summary_table)
-
-    •   Flag and view significant weight changes:
-
-flagged_data \<- flag_weight_loss(cleaned_data) View(flagged_data)
+``` r
+summary_table <- generate_summary_table(cleaned_data)
+print(summary_table)
+```
 
 ## Step 3: Create Visualistions
 
@@ -133,35 +131,11 @@ built-in plotting functions:
 Plot weight trends by treatment group
 
 ``` r
-plot_weight_trends(cleaned_data)
+plot_body_weight(cleaned_data)
 ```
 
 # Support
 
 If you encounter any issues or have questions, please submit a GitHub
 issue in the repository or contact the maintainer at
-<your_email@example.com>.
-
-What is special about using `README.Rmd` instead of just `README.md`?
-You can include R chunks like so:
-
-``` r
-summary(cars)
-#>      speed           dist       
-#>  Min.   : 4.0   Min.   :  2.00  
-#>  1st Qu.:12.0   1st Qu.: 26.00  
-#>  Median :15.0   Median : 36.00  
-#>  Mean   :15.4   Mean   : 42.98  
-#>  3rd Qu.:19.0   3rd Qu.: 56.00  
-#>  Max.   :25.0   Max.   :120.00
-```
-
-You’ll still need to render `README.Rmd` regularly, to keep `README.md`
-up-to-date. `devtools::build_readme()` is handy for this.
-
-You can also embed plots, for example:
-
-<img src="man/figures/README-pressure-1.png" width="100%" />
-
-In that case, don’t forget to commit and push the resulting figure
-files, so they display on GitHub and CRAN.
+<eugeneweiheng@college.harvard.edu>
