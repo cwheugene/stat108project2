@@ -31,10 +31,10 @@
 library(dplyr)
 clean_mixed_columns <- function(data, ...) {
   # Capture the column names passed in the ellipsis
-  columns <- enquos(...)
+  columns <- rlang::enquos(...)
 
   # Convert the column names to strings for easy reference
-  column_names <- sapply(columns, quo_name)
+  column_names <- sapply(columns, rlang::quo_name)
 
   # Iterate over the specified columns and clean them
   for (col in column_names) {
