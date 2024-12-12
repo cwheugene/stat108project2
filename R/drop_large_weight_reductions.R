@@ -6,7 +6,9 @@
 #' This function calculates the percentage weight reduction between specified columns,
 #' flags rows exceeding the threshold, and returns a cleaned dataset along with a summary
 #' of dropped rows.
-#'
+#' @name drop_large_weight_reductions
+#' @title Drops Any Rows With Large Weight Reductions
+#' @description Detects and removes rows where the mouse trial weight decreases dramatically across columns
 #' @param data A data frame containing the columns to evaluate.
 #' @param ... Columns containing weight measurements. At least two columns must be specified.
 #' @param threshold A numeric value specifying the percentage reduction threshold. Defaults to 20.
