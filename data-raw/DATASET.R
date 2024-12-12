@@ -1,16 +1,3 @@
-## code to prepare `DATASET` dataset goes here
-
-usethis::use_data(DATASET, overwrite = TRUE)
-
-#' Clean and Merge Mouse Trial Data
-#'
-#' Reads and cleans the Excel file for the mouse vaccine trial, merges datasets,
-#' and flags issues like significant weight loss.
-#'
-#' @param file_path Path to the Excel file.
-#' @return A cleaned and merged data frame.
-#' @import dplyr
-#' @importFrom readxl read_excel
 clean_mouse_data <- function(file_path) {
   # Load necessary libraries
   library(readxl)
@@ -21,33 +8,72 @@ clean_mouse_data <- function(file_path) {
   body_weight_data <- read_excel(file_path, sheet = "Body Weight")
   outcome_data <- read_excel(file_path, sheet = "Outcome")
 
-  # Clean 'Birth' data
-  birth_data <- birth_data %>%
-    rename(Mouse_ID = `Mouse ID`, Birth_Date = `Birth Date`) %>%
-    mutate(Birth_Date = as.Date(Birth_Date, format = "%Y-%m-%d"))
+  # Columns are read based on their position rather than their titles to avoid
+  # problems with typos
 
-  # Clean 'Body Weight' data
+  # Rename columns in 'Birth' based on their positions
+  colnames(birth_data) <- c("ID", "sex", "num", "treatment")
+
+  # Rename columns in 'Body Weight' based on their positions
+  colnames(body_weight_data) <- c(
+    "ID",
+    "weight_1", "date_1",
+    "weight_2", "date_2",
+    "weight_3", "date_3"
+  )
+
+  # Rename columns in 'Outcome' based on their positions
+  colnames(outcome_data) <- c(
+    "ID",
+    "outcome_1", "date_1",
+    "outcome_2", "date_2",
+    "outcome_3", "date_3"
+  )
+
+  # Convert relevant columns to appropriate types
   body_weight_data <- body_weight_data %>%
-    rename(Mouse_ID = `Mouse ID`, Week = `Week`, Weight = `Body Weight`) %>%
-    mutate(Weight = as.numeric(Weight)) %>%
-    filter(!is.na(Weight))  # Remove rows with missing weight
+    mutate(
+      weight_1 = as.numeric(weight_1),
+      weight_2 = as.numeric(weight_2),
+      weight_3 = as.numeric(weight_3),
+      date_1 = as.Date(date_1, format = "%Y-%m-%d"),
+      date_2 = as.Date(date_2, format = "%Y-%m-%d"),
+      date_3 = as.Date(date_3, format = "%Y-%m-%d")
+    )
 
-  # Clean 'Outcome' data
   outcome_data <- outcome_data %>%
-    rename(Mouse_ID = `Mouse ID`, Outcome = `Trial Outcome`) %>%
-    mutate(Outcome = as.factor(Outcome))  # Convert to factor
+    mutate(
+      date_1 = as.Date(date_1, format = "%Y-%m-%d"),
+      date_2 = as.Date(date_2, format = "%Y-%m-%d"),
+      date_3 = as.Date(date_3, format = "%Y-%m-%d")
+    )
 
   # Merge datasets
-  full_data <- birth_data %>%
-    inner_join(body_weight_data, by = "Mouse_ID") %>%
-    inner_join(outcome_data, by = "Mouse_ID")
+  merged_data <- birth_data %>%
+    inner_join(body_weight_data, by = "ID") %>%
+    inner_join(outcome_data, by = c("ID", "date_1", "date_2", "date_3"))
 
-  # Add flags for weight loss > 20%
-  full_data <- full_data %>%
-    group_by(Mouse_ID) %>%
-    mutate(Weight_Loss_Flag = ifelse(lag(Weight, default = first(Weight)) - Weight > 0.2 * lag(Weight, default = first(Weight)), TRUE, FALSE)) %>%
-    ungroup()
+  ordered_data <- merged_data %>%
+    select(
+      ID,
+      sex,
+      treatment,
+      weight_1,
+      outcome_1,
+      date_1,
+      weight_2,
+      outcome_2,
+      date_2,
+      weight_3,
+      outcome_3,
+      date_3
+    )
 
-  # Return cleaned dataset
-  return(full_data)
+  # Return cleaned and ordered dataset
+  return(ordered_data)
 }
+
+clean_mouse_data(file_path)
+
+usethis::use_data(clean_mouse_data, overwrite = TRUE)
+

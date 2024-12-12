@@ -1,4 +1,4 @@
-Package: project2
+Package: whiskerTrimmer
 Type: Package
 Title: What the Package Does (Title Case)
 Version: 0.1.0
@@ -12,8 +12,17 @@ LazyData: true
 Imports: 
     dplyr,
     readxl,
-    roxygen2
+    roxygen2,
+    stringdist,
+    stringr, 
+    dplyr, 
+    rlang,
+    patchwork, 
+    ggplot2
 RoxygenNote: 7.3.2
 Suggests: 
+    knitr,
+    rmarkdown,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
+VignetteBuilder: knitr
