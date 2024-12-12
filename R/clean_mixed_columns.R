@@ -24,7 +24,7 @@
 #' )
 #'
 #' # Clean the 'Weight' and 'Height' columns
-#' cleaned_data <- clean_mixed_columns(data, Weight, Height)
+#' cleaned_data <- clean_mixed_columns(data, Weight, Outcome)
 #'
 #' # View the cleaned data
 #' print(cleaned_data)
