@@ -4,9 +4,6 @@
 #' of a data frame by comparing less frequent values to more common ones. Values with
 #' a string similarity score above the specified threshold are replaced with their
 #' closest match from the most frequent values.
-#' @name check_misspellings
-#' @title Check and Correct Misspellings in a Column
-#' @description Identifies and corrects potential misspellings in a column.
 #' @param data A data frame containing the column to check for misspellings.
 #' @param column_name A character string specifying the name of the column to process.
 #' Defaults to "treatment".
