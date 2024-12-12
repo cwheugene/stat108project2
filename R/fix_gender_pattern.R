@@ -4,7 +4,9 @@
 #' containing IDs. It assumes that IDs follow the pattern `Prefix_Gender_Number`, where `Gender`
 #' is represented by a single character (e.g., "M" or "F"). Mismatches are resolved by aligning
 #' the gender with the previous or next entry in the sequence.
-#'
+#' @name fix_gender_pattern
+#' @title Fixes Mistakes When Filling Out Gender in ID Column
+#' @description Identifies any time the gender is possibly filled in erroneously
 #' @param data A data frame containing the column to process.
 #' @param column_name A character string specifying the name of the column to fix.
 #' Defaults to `"ID"`.
