@@ -3,14 +3,6 @@
 \name{check_misspellings}
 \alias{check_misspellings}
 \title{Check and Correct Misspellings in a Column}
-\usage{
-check_misspellings(
-  data,
-  column_name = "treatment",
-  frequency_threshold = 3,
-  similarity_threshold = 0.8
-)
-}
 \arguments{
 \item{data}{A data frame containing the column to check for misspellings.}
 
@@ -27,6 +19,11 @@ similarity score required for a replacement to occur. Defaults to 0.8.}
 A data frame with corrected values in the specified column.
 }
 \description{
+Identifies and corrects potential misspellings in a column.
+}
+\details{
+Check and Correct Misspellings in a Column
+
 This function identifies and corrects potential misspellings in a specified column
 of a data frame by comparing less frequent values to more common ones. Values with
 a string similarity score above the specified threshold are replaced with their
