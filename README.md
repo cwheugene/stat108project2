@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# whiskerTrimmer (or some other name idk)
+# whiskerTrimmer
 
 <!-- badges: start -->
 <!-- badges: end -->
@@ -66,19 +66,19 @@ install.packages("devtools")
 2.  Install the Mouse Vaccine Trial package from GitHub:
 
 ``` r
-devtools::install_github("cwheugene/mouse_trial_package")
+devtools::install_github("cwheugene/whiskerTrimmer")
 ```
 
 3.  Load the package in your R session:
 
 ``` r
-library(mouse_trial_package)
+library(whiskerTrimmer)
 ```
 
 4.  Verify installation by checking the documentation:
 
 ``` r
-?mouse_trial_package
+?whiskerTrimmer
 ```
 
 # Using the Package
