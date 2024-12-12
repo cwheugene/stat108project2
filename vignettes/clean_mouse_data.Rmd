@@ -132,6 +132,8 @@ The function performs the following steps:
 Example Usage:
 
 ```{r}
+library(tidyr)
+library(ggplot2)
 sample_data <- data.frame(
   ID = c(1, 2, 3, 4),
   sex = c("M", "F", "M", "F"),
@@ -198,7 +200,7 @@ print(misspellings)
 
 # Step 5: Drop rows with large weight reductions
 weight_adjustment <- drop_large_weight_reductions(mouse_data_bw, "Body Weight 1", "Body Weight 2", "Body Weight 3", threshold = 20)
-mouse_data <- weight_adjustment$Cleaned_Data
+mouse_data_bw <- weight_adjustment$Cleaned_Data
 
 # Now `mouse_data` is cleaner and more consistent.
 ```
