@@ -1,4 +1,7 @@
-check_misspellings <- function(data, column_name, frequency_threshold = 3, similarity_threshold = 0.8) {
+check_misspellings <- function(data, column_name = "treatment", frequency_threshold = 3, similarity_threshold = 0.8) {
+  library(dplyr)
+  library(stringdist)
+
   # Ensure the specified column exists
   if (!column_name %in% colnames(data)) {
     stop("Specified column does not exist in the data.")
@@ -18,13 +21,8 @@ check_misspellings <- function(data, column_name, frequency_threshold = 3, simil
     filter(Frequency < frequency_threshold) %>%
     pull(.data[[column_name]])
 
-  # Initialize a results data frame
-  results <- data.frame(
-    Original_Value = character(),
-    Similar_To = character(),
-    Similarity_Score = numeric(),
-    stringsAsFactors = FALSE
-  )
+  # Initialize a mapping of replacements
+  replacements <- list()
 
   # Compare less common values to common values
   for (less_common in less_common_values) {
@@ -32,18 +30,24 @@ check_misspellings <- function(data, column_name, frequency_threshold = 3, simil
       # Calculate string similarity
       similarity <- stringdist::stringsim(less_common, common, method = "jw")
 
-      # Skip comparison if similarity is NA
+      # Replace value if similarity exceeds threshold
       if (!is.na(similarity) && similarity > similarity_threshold) {
-        results <- rbind(results, data.frame(
-          Original_Value = less_common,
-          Similar_To = common,
-          Similarity_Score = similarity,
-          stringsAsFactors = FALSE
-        ))
+        replacements[[less_common]] <- common
+        break
       }
     }
   }
 
-  # Return the results as a tibble
-  return(as_tibble(results))
+  # Replace values in the dataset
+  data[[column_name]] <- data[[column_name]] %>%
+    sapply(function(value) {
+      if (value %in% names(replacements)) {
+        replacements[[value]]
+      } else {
+        value
+      }
+    })
+
+  # Return the modified dataset
+  return(data)
 }
