@@ -67,7 +67,18 @@ na_summary <- function(data) {
 #This functions enables you to visualize the numeric data
 # It returns a plot that shows the distribution (histogram) of each of the columns
 # it also computes all the outliers using the z-score and shows them in red
-visualize_outliers <- function(df, ..., z_threshold = 3) {
+visualize_outliers <- function(df2, ..., z_threshold = 3) {
+  library(dplyr)
+  library(ggplot2)
+  library(patchwork)
+
+  # Ensure the input is a data frame
+  if (!is.data.frame(df2)) {
+    return(paste(
+      "Input df2 must be a data frame. The input type is:", class(df2)[1]
+    ))
+  }
+
   # Capture the column names passed as arguments
   columns <- enquos(...)
 
@@ -77,7 +88,7 @@ visualize_outliers <- function(df, ..., z_threshold = 3) {
   }
 
   # Select the specified columns
-  selected_data <- df %>%
+  selected_data <- df2 %>%
     select(!!!columns)
 
   # Convert all columns to numeric
@@ -148,7 +159,7 @@ visualize_outliers(df, "yardsToGo", "PassLength", "YardsAfterCatch")
 true_yardline <- function(data, possession_col, yardline_side_col, yardline_number_col) {
   # Ensure the input is a data frame
   if (!is.data.frame(data)) {
-    stop(paste(
+    return(paste(
       "Input data must be a data frame. The input type is:", class(data)[1]
     ))
   }
