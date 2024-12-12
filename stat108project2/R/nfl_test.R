@@ -19,9 +19,11 @@ na_validate <- function(func, data) {
 }
 
 na_summary <- function(data) {
+  # Ensure data is a data frame
   if (!is.data.frame(data)) {
     stop("Input must be a data frame.")
   }
+
   # Initialize results as a list
   results <- list()
 
@@ -48,7 +50,7 @@ na_summary <- function(data) {
     }
 
     # Append statistics for the column
-    results[[col]] <- list(
+    results[[col]] <- tibble(
       Column = col,
       Number_of_NAs = num_nas,
       Percentage_of_NAs = percentage_nas,
@@ -59,11 +61,11 @@ na_summary <- function(data) {
   }
 
   # Convert results list to a tibble
-  results_tibble <- bind_rows(results)
+  results_tibble <- dplyr::bind_rows(results)
 
   # Arrange by highest number of NAs
   results_tibble <- results_tibble %>%
-    arrange(desc(Number_of_NAs))
+    dplyr::arrange(desc(Number_of_NAs))
 
   return(results_tibble)
 }
@@ -149,9 +151,15 @@ visualize_outliers(data, "yardsToGo", "PassLength", "YardsAfterCatch")
 #NFL data idiosyncrasy: the numbering only goes up to 50 yards and then switches when you get to opponents side.
 #This computes the "true yardline"
 true_yardline <- function(data, possession_col, yardline_side_col, yardline_number_col) {
+  # Check if input is a data frame
+  if (!is.data.frame(data)) {
+    stop("Input data must be a data frame.")
+  }
+
   # Ensure required columns are in the data
   if (!all(c(possession_col, yardline_side_col, yardline_number_col) %in% colnames(data))) {
-    stop("Specified columns do not exist in the data.")
+    missing_cols <- setdiff(c(possession_col, yardline_side_col, yardline_number_col), colnames(data))
+    stop(paste("The following columns are missing from the data:", paste(missing_cols, collapse = ", ")))
   }
 
   # Calculate true yardline
