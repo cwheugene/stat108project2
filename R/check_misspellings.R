@@ -4,6 +4,9 @@
 #' of a data frame by comparing less frequent values to more common ones. Values with
 #' a string similarity score above the specified threshold are replaced with their
 #' closest match from the most frequent values.
+#' @name check_misspellings
+#' @title Checks Any Potential Misspellings and Fixes Them
+#' @description Looks at common words and potential misspellings of them and alerts it to the user
 #' @param data A data frame containing the column to check for misspellings.
 #' @param column_name A character string specifying the name of the column to process.
 #' Defaults to "treatment".
@@ -18,6 +21,7 @@
 #'
 #' @examples
 #' # Example dataset
+#' library(dplyr)
 #' data <- data.frame(
 #'   treatment = c("Placebo", "Placebo", "Plcebo", "Vacine", "Vaccine", "Vaccine"),
 #'   stringsAsFactors = FALSE
