@@ -8,9 +8,11 @@ output: github_document
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  fig.path = "man/figures/whiskerTrimmer",
+  fig.path = "man/figures/",
   out.width = "100%"
 )
+
+knitr::include_graphics("man/figures/whiskerTrimmer.png")
 ```
 
 # whiskerTrimmer
