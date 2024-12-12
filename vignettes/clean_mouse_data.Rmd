@@ -111,6 +111,67 @@ cleaned_data <- weight_adjustment$Cleaned_Data
 cleaned_data
 ```
 
+6. Plot Mouse Body Weight Over Time by Treatment Group
+
+`plot_body_weight` function is designed to generate an insightful visualization of mouse body weight trends over time, segmented by treatment groups and sex. This function facilitates the analysis of experimental data by transforming the input dataset into a format suitable for visualization and plotting using `ggplot2`.
+
+Function Details
+
+The function performs the following steps:
+
+* Reshape the Data: Transforms the dataset from wide to long format using the pivot_longer function to make it compatible with ggplot2.
+
+* The weight columns are combined into a single weight column.
+
+* The date columns are combined into a single date column.
+
+* Filter Matched Measurements: Ensures that weights and dates with matching suffixes are paired correctly.
+
+* Generate the Plot: Creates a line plot of body weight over time for each mouse, grouped by treatment and faceted by sex.
+
+Example Usage:
+
+```{r}
+sample_data <- data.frame(
+  ID = c(1, 2, 3, 4),
+  sex = c("M", "F", "M", "F"),
+  treatment = c("A", "B", "A", "B"),
+  weight_1 = c(25, 22, 30, 28),
+  weight_2 = c(26, 23, 31, 29),
+  date_1 = as.Date(c("2024-01-01", "2024-01-01", "2024-01-01", "2024-01-01")),
+  date_2 = as.Date(c("2024-02-01", "2024-02-01", "2024-02-01", "2024-02-01"))
+)
+
+plot <- plot_body_weight(sample_data)
+```
+
+7. Generate a Summary Table of Average Body Weights
+
+The `generate_summary_table function` is a utility for creating summary tables that display the average body weights of mice grouped by treatment and sex. This allows researchers to easily identify trends and differences in experimental data.
+
+The function performs the following steps:
+
+*Group the Data: Groups the dataset by treatment and sex.
+
+*Calculate Averages: Computes the mean weight for each group at different time points, ignoring missing values.
+
+*Rename Columns: Renames the columns for clarity in the output table.
+
+Example Usage:
+
+```{r}
+sample_data <- data.frame(
+  treatment = c("A", "B", "A", "B"),
+  sex = c("M", "F", "M", "F"),
+  weight_1 = c(25, 22, 30, 28),
+  weight_2 = c(26, 23, 31, 29),
+  weight_3 = c(27, 24, 32, 30)
+)
+
+summary_table <- generate_summary_table(sample_data)
+
+```
+
 # Putting it all Together
 
 ```{r}
