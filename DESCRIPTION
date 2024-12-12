@@ -15,6 +15,7 @@ Imports:
     stringdist,
     stringr, 
     dplyr, 
+    tidyr,
     rlang,
     patchwork, 
     ggplot2
