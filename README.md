@@ -176,6 +176,8 @@ Plot weight trends by treatment group
 ``` r
 plot_body_weight(cleaned_data)
 ```
+# Data
+The mouse data source was downloaded from Canvas. The NFL data source was taken from [this public data repository](https://github.com/nfl-football-ops/Big-Data-Bowl). 
 
 # Support
 
