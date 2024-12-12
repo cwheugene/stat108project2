@@ -117,25 +117,26 @@ cleaned_data
 library(whiskerTrimmer)
 
 # Load your dataset
-mouse_data <- readxl::read_excel("data-raw/mousedata.xlsx")
+mouse_data <- readxl::read_excel("../data/mousedata.xlsx", sheet = "Birth")
+mouse_data_bw <- readxl::read_excel("../data/mousedata.xlsx", sheet = "Body Weight")
 
 # Step 1: Fix gender patterns
 mouse_data <- fix_gender_pattern(mouse_data, "ID")
 
 # Step 2: Clean numeric columns
-mouse_data <- clean_mixed_columns(mouse_data, Weight_Day1, Weight_Day2)
+mouse_data_bw <- clean_mixed_columns(mouse_data_bw, "Body Weight 1", "Body Weight 2", "Body Weight 3")
 
 # Step 3: Detect and handle outliers
-outlier_detection <- detect_outliers(mouse_data, Weight_Day1, Weight_Day2, 
+outlier_detection <- detect_outliers(mouse_data_bw, "Body Weight 1", "Body Weight 2", "Body Weight 3",
                                      method = "mean", threshold = 2.2, drop_outliers = TRUE)
-mouse_data <- outlier_detection$Cleaned_Data
+mouse_data_bw <- outlier_detection$Cleaned_Data
 
 # Step 4: Identify potential misspellings
-misspellings <- check_misspellings(mouse_data, "Diet", frequency_threshold = 3, similarity_threshold = 0.8)
+misspellings <- check_misspellings(mouse_data, "Treatment", frequency_threshold = 3, similarity_threshold = 0.8)
 print(misspellings)
 
 # Step 5: Drop rows with large weight reductions
-weight_adjustment <- drop_large_weight_reductions(mouse_data, Weight_Day1, Weight_Day2, threshold = 20)
+weight_adjustment <- drop_large_weight_reductions(mouse_data_bw, "Body Weight 1", "Body Weight 2", "Body Weight 3", threshold = 20)
 mouse_data <- weight_adjustment$Cleaned_Data
 
 # Now `mouse_data` is cleaner and more consistent.
