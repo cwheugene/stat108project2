@@ -19,6 +19,9 @@ na_validate <- function(func, data) {
 }
 
 na_summary <- function(data) {
+  if (!is.data.frame(data)) {
+    stop("Input must be a data frame.")
+  }
   # Initialize results as a list
   results <- list()
 
