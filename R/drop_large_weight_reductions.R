@@ -22,6 +22,7 @@
 #'
 #' @examples
 #' # Example dataset
+#' library(dplyr)
 #' data <- data.frame(
 #'   Mouse_ID = 1:5,
 #'   Weight_Day1 = c(50, 60, 55, 45, 40),
@@ -44,7 +45,7 @@ usethis::use_package("stringr")
 
 drop_large_weight_reductions <- function(data, ..., threshold = 20) {
   # Capture the column names
-  columns <- enquos(...)
+  columns <- rlang::enquos(...)
 
   # Ensure there are at least two columns specified
   if (length(columns) < 2) {
@@ -52,7 +53,7 @@ drop_large_weight_reductions <- function(data, ..., threshold = 20) {
   }
 
   # Convert column names to strings for easier manipulation
-  column_names <- sapply(columns, quo_name)
+  column_names <- sapply(columns, rlang::quo_name)
 
   # Ensure all specified columns exist
   missing_columns <- setdiff(column_names, colnames(data))
