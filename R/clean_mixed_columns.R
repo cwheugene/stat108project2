@@ -26,7 +26,7 @@
 #'
 #' # View the cleaned data
 #' print(cleaned_data)
-
+library(dplyr)
 clean_mixed_columns <- function(data, ...) {
   # Capture the column names passed in the ellipsis
   columns <- enquos(...)
