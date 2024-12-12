@@ -6,9 +6,6 @@
 
 plot_body_weight <- function(data) {
   # Load necessary library
-  library(ggplot2)
-  library(tidyr)
-
   # Reshape the data into long format for ggplot
   long_data <- data %>%
     pivot_longer(
