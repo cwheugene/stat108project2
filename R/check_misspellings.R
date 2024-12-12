@@ -32,9 +32,6 @@
 #' print(corrected_data)
 
 check_misspellings <- function(data, column_name = "treatment", frequency_threshold = 3, similarity_threshold = 0.8) {
-  library(dplyr)
-  library(stringdist)
-
   # Ensure the specified column exists
   if (!column_name %in% colnames(data)) {
     stop("Specified column does not exist in the data.")
