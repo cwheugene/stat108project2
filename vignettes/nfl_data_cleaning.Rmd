@@ -1,0 +1,92 @@
+---
+title: "nfl_data_cleaning"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{nfl_data_cleaning}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+
+library(dplyr)
+library(ggplot2)
+library(patchwork)
+library(rlang)
+```
+
+```{r setup}
+library(project2)
+```
+
+#Introduction
+This vignette demonstrates functions designed to work with NFL play-by-play or similar datasets. The functions illustrated here:
+
+1. `na_summary()`: Summarizes missing values (NAs) in each column.
+2. `visualize_outliers()`: Creates pairwise plots of numeric columns and highlights potential outliers.
+3. `true_yardline()`: Calculates a "true yardline" to account for how the NFL designates field position.
+
+
+# Example Data
+For demonstration, let’s create a small, synthetic NFL-like dataset. In reality, you would load your dataset from a CSV, Excel file, or API:
+
+```{r}
+data <- data.frame(
+  possessionTeam = c("NE", "NE", "DAL", "DAL", "NE"),
+  yardlineSide = c("NE", "DAL", "DAL", "NE", "NE"),
+  yardlineNumber = c(30, 45, 10, 48, NA),
+  yardsToGo = c(10, 8, 7, NA, 10),
+  PassLength = c(NA, 15, 5, 25, 0),
+  YardsAfterCatch = c(5, NA, 0, 10, 2)
+)
+
+data
+```
+# Summarizing Missing Values
+
+`na_summary()` provides a quick overview of how missing values are distributed across the dataset. It reports:
+
+* Number of NAs in each column.
+* Percentage of NAs in that column.
+* How many NAs are "row-unique" (the only NA in that row).
+* The mean and standard deviation for numeric columns (if applicable).
+
+```{r}
+na_info <- na_summary(data)
+na_info
+```
+
+# Visualizing Outliers
+
+`visualize_outliers()` helps you understand the distribution of numeric columns and identify potential outliers. It uses a Z-score method by default, marking points that exceed the threshold (`default z_threshold = 3`) as outliers.
+
+Pairwise plots are created so that:
+
+* Diagonal panels show histograms of individual columns.
+* Off-diagonal panels show scatterplots of pairs of columns, with potential outliers highlighted in red.
+
+```{r}
+plot_outliers <- visualize_outliers(data, yardsToGo, PassLength, YardsAfterCatch)
+plot_outliers
+```
+
+# Calculating the True Yardline
+
+
+In NFL data, yardline numbering changes at the 50-yard line. The function `true_yardline()` computes a continuous measure of field position from the offense’s perspective:
+
+* If the offense is on its own side, the yardline is the given number (e.g., their own 30-yard line is 30).
+* If the offense has crossed into the opponent’s side of the field, the yardline is computed as `100 - yardlineNumber`.
+
+
+```{r}
+true_position <- true_yardline(data, "possessionTeam", "yardlineSide", "yardlineNumber")
+true_position
+```
+
+
+

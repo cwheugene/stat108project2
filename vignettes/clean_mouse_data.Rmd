@@ -1,0 +1,143 @@
+---
+title: "Data Cleaning Workflow"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{vignette}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+
+```{r setup}
+library(project2)
+```
+
+
+# Introduction
+
+whiskerTrimmer provides a set of functions designed to clean and preprocess experimental mouse data. Common issues addressed include:
+
+* Fixing incorrectly recorded mouse gender IDs.
+* Cleaning columns that contain mixed data types (numeric and non-numeric).
+* Detecting and handling outliers using various statistical methods.
+* Identifying potential misspellings in categorical data.
+* Dropping rows with large, implausible weight reductions across measurement times.
+
+
+In this vignette, we’ll demonstrate how to use these functions in a typical data cleaning workflow.
+
+# Prerequisites
+Before starting, ensure you have:
+
+* Installed and loaded whiskerTrimmer
+
+```{r}
+# install.packages("devtools") if needed
+devtools::load_all()
+```
+* A dataset that you want to clean, structured with a column for mouse IDs and various measurement columns.
+
+For demonstration, let’s create a small, hypothetical dataset. In your real workflow, you might load your data using `read_excel()` or `read.csv()`.
+
+```{r}
+
+mouse_data <- data.frame(
+  ID = c("Mouse_F_01", "Mouse_F_02", "Mouse_M_03", "Mouse_F_04"),
+  Weight_Day1 = c("20g", "19", "twenty", "21"),
+  Weight_Day2 = c("19.5g", "20", "twenty one", "16"),
+  Diet = c("Stadard", "Standard", "Stanrd", "Standard") # misspellings of "Standard"
+)
+mouse_data
+```
+
+# Step-by-Step Cleaning
+
+1. Fixing Gender Patterns
+
+`fix_gender_pattern()` corrects single mis-typed genders in mouse IDs. It expects a pattern like Prefix_Gender_Number (e.g., Mouse_F_01), and if one entry is out of place, it fixes it to match the neighboring entries.
+
+```{r}
+# Run fix_gender_pattern()
+cleaned_data <- fix_gender_pattern(data = mouse_data, column_name = "ID")
+cleaned_data
+```
+
+2. Cleaning Mixed Columns
+
+`clean_mixed_columns()` removes non-numeric characters from columns that should be numeric. Here, Weight_Day1 and Weight_Day2 contain textual elements like "g" or words.
+
+```{r}
+cleaned_data <- clean_mixed_columns(cleaned_data, Weight_Day1, Weight_Day2)
+cleaned_data
+```
+
+3. Detecting Outliers
+
+`detect_outliers()` identifies outliers using either a mean-based (Z-score) or median-based (IQR) method. Here, we use the Z-score method `(method = "mean")` with a threshold of 2.2. Set `drop_outliers = TRUE` to replace outliers with `NA`.
+
+```{r}
+outlier_detection <- detect_outliers(cleaned_data, Weight_Day1, Weight_Day2,
+                                     method = "mean", threshold = 2.2, drop_outliers = TRUE)
+outlier_detection$Results   # Outlier details
+cleaned_data <- outlier_detection$Cleaned_Data
+cleaned_data
+```
+
+4. Checking for Misspellings
+
+`check_misspellings()` helps identify values that may be close matches to a more common value. Suppose `Diet` should always be "Standard" but contains variations like "Stadard" or "Stanrd":
+
+```{r}
+misspellings <- check_misspellings(cleaned_data, "Diet", frequency_threshold = 3, similarity_threshold = 0.8)
+misspellings
+```
+
+
+5. Dropping Rows with Large Weight Reductions
+
+`drop_large_weight_reductions()` removes rows where weights drop too sharply between measurements. For instance, a >20% drop between days might be unrealistic.
+
+```{r}
+weight_adjustment <- drop_large_weight_reductions(cleaned_data, Weight_Day1, Weight_Day2, threshold = 20)
+weight_adjustment$Dropped_Summary
+cleaned_data <- weight_adjustment$Cleaned_Data
+cleaned_data
+```
+
+# Putting it all Together
+
+```{r}
+library(whiskerTrimmer)
+
+# Load your dataset
+mouse_data <- readxl::read_excel("path/to/your/data.xlsx")
+
+# Step 1: Fix gender patterns
+mouse_data <- fix_gender_pattern(mouse_data, "ID")
+
+# Step 2: Clean numeric columns
+mouse_data <- clean_mixed_columns(mouse_data, Weight_Day1, Weight_Day2)
+
+# Step 3: Detect and handle outliers
+outlier_detection <- detect_outliers(mouse_data, Weight_Day1, Weight_Day2, 
+                                     method = "mean", threshold = 2.2, drop_outliers = TRUE)
+mouse_data <- outlier_detection$Cleaned_Data
+
+# Step 4: Identify potential misspellings
+misspellings <- check_misspellings(mouse_data, "Diet", frequency_threshold = 3, similarity_threshold = 0.8)
+print(misspellings)
+
+# Step 5: Drop rows with large weight reductions
+weight_adjustment <- drop_large_weight_reductions(mouse_data, Weight_Day1, Weight_Day2, threshold = 20)
+mouse_data <- weight_adjustment$Cleaned_Data
+
+# Now `mouse_data` is cleaner and more consistent.
+```
+
