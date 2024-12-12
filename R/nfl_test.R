@@ -19,9 +19,11 @@ na_validate <- function(func, data) {
 }
 
 na_summary <- function(data) {
+  # Ensure data is a data frame
   if (!is.data.frame(data)) {
     stop("Input must be a data frame.")
   }
+
   # Initialize results as a list
   results <- list()
 
@@ -48,7 +50,7 @@ na_summary <- function(data) {
     }
 
     # Append statistics for the column
-    results[[col]] <- list(
+    results[[col]] <- tibble(
       Column = col,
       Number_of_NAs = num_nas,
       Percentage_of_NAs = percentage_nas,
@@ -59,11 +61,11 @@ na_summary <- function(data) {
   }
 
   # Convert results list to a tibble
-  results_tibble <- bind_rows(results)
+  results_tibble <- dplyr::bind_rows(results)
 
   # Arrange by highest number of NAs
   results_tibble <- results_tibble %>%
-    arrange(desc(Number_of_NAs))
+    dplyr::arrange(desc(Number_of_NAs))
 
   return(results_tibble)
 }
@@ -74,44 +76,55 @@ na_validate(na_summary, data)
 # It returns a plot that shows the distribution (histogram) of each of the columns
 # it also computes all the outliers using the z-score and shows them in red
 visualize_outliers <- function(data, ..., z_threshold = 3) {
+  library(dplyr)
+  library(ggplot2)
+  library(patchwork)
+  
   # Capture the column names passed as arguments
   columns <- enquos(...)
-
+  
   # Check if at least two columns are provided
   if (length(columns) < 2) {
     stop("At least two columns must be specified.")
   }
-
+  
   # Select the specified columns
-  numeric_data <- data %>%
+  selected_data <- data %>%
     select(!!!columns)
-
-  # Ensure all specified columns are numeric
-  if (!all(sapply(numeric_data, is.numeric))) {
-    stop("All specified columns must be numeric.")
+  
+  # Convert all columns to numeric
+  numeric_data <- selected_data %>%
+    mutate(across(everything(), ~ as.numeric(.), .names = "{col}"))
+  
+  # Check for non-convertible columns
+  if (any(sapply(numeric_data, function(col) all(is.na(col))))) {
+    stop("One or more columns could not be converted to numeric. Check for non-numeric values.")
   }
-
-  # Add an outlier flag for each column
+  
+  # Add an outlier flag for each numeric column
   numeric_data <- numeric_data %>%
     mutate(across(
       everything(),
-      ~ ifelse(abs((. - mean(., na.rm = TRUE)) / sd(., na.rm = TRUE)) > z_threshold, "Outlier", "Normal"),
+      ~ ifelse(
+        abs((. - mean(., na.rm = TRUE)) / sd(., na.rm = TRUE)) > z_threshold,
+        "Outlier", "Normal"
+      ),
       .names = "outlier_{col}"
     ))
-
+  
   # Get column names for looping
-  column_names <- colnames(numeric_data)[seq_along(columns)]
+  column_names <- colnames(selected_data)
   n <- length(column_names)
-
+  
   # Initialize an empty matrix to store plots
   plots <- matrix(list(), n, n)
-
+  
   # Generate plots
   for (i in seq_len(n)) {
     for (j in seq_len(n)) {
       if (i == j) {
         # Diagonal: Histograms
-        p <- ggplot(numeric_data, aes_string(x = column_names[i])) +
+        p <- ggplot(numeric_data, aes(x = .data[[column_names[i]]])) +
           geom_histogram(bins = 20, fill = "blue", alpha = 0.7) +
           theme_minimal() +
           labs(x = column_names[i], y = "Count") +
@@ -121,39 +134,41 @@ visualize_outliers <- function(data, ..., z_threshold = 3) {
         x_var <- column_names[j]
         y_var <- column_names[i]
         y_outlier_col <- paste0("outlier_", y_var)
-
+        
         # Scatterplot with outliers in red
-        p <- ggplot(numeric_data, aes_string(x = x_var, y = y_var)) +
+        p <- ggplot(numeric_data, aes(x = .data[[x_var]], y = .data[[y_var]])) +
           geom_point(aes(color = .data[[y_outlier_col]]), alpha = 0.7) +
           scale_color_manual(values = c("Outlier" = "red", "Normal" = "black")) +
-          theme(
-            axis.text.y = element_blank(),
-            axis.ticks.y = element_blank(),
-            legend.position = "none"
-          )
-        labs(x = x_var, y = y_var, color = "Legend")
+          theme_minimal() +
+          labs(x = x_var, y = y_var, color = "Legend") +
+          theme(legend.position = "none")
       }
       # Store plot in the matrix
       plots[i, j] <- list(p)
     }
   }
-
+  
   # Combine plots into a grid using patchwork
   plot_grid <- wrap_plots(plots, byrow = FALSE)
-
+  
   return(plot_grid)
 }
 visualize_outliers(data, "yardsToGo", "PassLength", "YardsAfterCatch")
 
-
 #NFL data idiosyncrasy: the numbering only goes up to 50 yards and then switches when you get to opponents side.
 #This computes the "true yardline"
 true_yardline <- function(data, possession_col, yardline_side_col, yardline_number_col) {
+  # Check if input is a data frame
+  if (!is.data.frame(data)) {
+    stop("Input data must be a data frame.")
+  }
+  
   # Ensure required columns are in the data
   if (!all(c(possession_col, yardline_side_col, yardline_number_col) %in% colnames(data))) {
-    stop("Specified columns do not exist in the data.")
+    missing_cols <- setdiff(c(possession_col, yardline_side_col, yardline_number_col), colnames(data))
+    stop(paste("The following columns are missing from the data:", paste(missing_cols, collapse = ", ")))
   }
-
+  
   # Calculate true yardline
   yardline <- data %>%
     mutate(
@@ -164,7 +179,7 @@ true_yardline <- function(data, possession_col, yardline_side_col, yardline_numb
       )
     ) %>%
     select(yardline) # Select only the "true_yardline" column
-
+  
   return(as_tibble(yardline))
 }
 true_yardline(data, "possessionTeam", "yardlineSide", "yardlineNumber")
