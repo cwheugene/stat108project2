@@ -3,7 +3,9 @@
 #' This function cleans specified columns in a data frame by removing non-numeric characters
 #' and converting them to numeric. It is useful for handling columns that contain a mix of
 #' numeric values and text, such as units or other annotations.
-#'
+#' @name clean_mixed_columns
+#' @title Checks and Cleans Mixed Data Type Columns
+#' @description Removes strings from any numeric column
 #' @param data A data frame containing the columns to clean.
 #' @param ... One or more column names to clean. These columns must exist in the data frame.
 #'
