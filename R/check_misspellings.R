@@ -30,7 +30,7 @@
 #'
 #' # View the corrected data
 #' print(corrected_data)
-
+library(dplyr)
 check_misspellings <- function(data, column_name = "treatment", frequency_threshold = 3, similarity_threshold = 0.8) {
   # Ensure the specified column exists
   if (!column_name %in% colnames(data)) {
