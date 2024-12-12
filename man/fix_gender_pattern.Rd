@@ -2,10 +2,7 @@
 % Please edit documentation in R/fix_gender_pattern.R
 \name{fix_gender_pattern}
 \alias{fix_gender_pattern}
-\title{Fix Mismatched Gender Patterns in IDs}
-\usage{
-fix_gender_pattern(data, column_name = "ID")
-}
+\title{Fixes Mistakes When Filling Out Gender in ID Column}
 \arguments{
 \item{data}{A data frame containing the column to process.}
 
@@ -16,6 +13,11 @@ Defaults to `"ID"`.}
 A modified data frame with corrected IDs in the specified column.
 }
 \description{
+Identifies any time the gender is possibly filled in erroneously
+}
+\details{
+Fix Mismatched Gender Patterns in IDs
+
 This function identifies and corrects single mismatched gender entries in a specified column
 containing IDs. It assumes that IDs follow the pattern `Prefix_Gender_Number`, where `Gender`
 is represented by a single character (e.g., "M" or "F"). Mismatches are resolved by aligning
