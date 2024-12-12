@@ -17,6 +17,7 @@
 #'
 #' @examples
 #' # Example dataset
+#' library(dplyr)
 #' data <- data.frame(
 #'   ID = c("C57BL6J_M_1", "MC57BL6J_M_2", "C57BL6J_F_3", "C57BL6J_M_4"),
 #'   stringsAsFactors = FALSE
