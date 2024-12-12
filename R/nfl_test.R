@@ -4,11 +4,12 @@
 #3. true_yardline: corrects for the way the NFL counts yardline (calculates true distance from the team's endzone to current position)
 
 
-#This function provides a summary of all the NA values in the dataframe
-# It tells you the number of NA values in each column, the total percent of NA values vs the other values,
-# the number of times when the NA in the column is "row-unique" (it is the only NA for its row), the mean of the column,
-# and the standard deviation of the column
 
+#' Provides a quick overview of how missing values are distributed across the dataset.
+#' @name `na_summary`
+#' @param data A NFL Dataset
+#' @return Number of NAs in each column, percentage of NAs, how many NAs are row unique, and mean and SD for numeric columns
+#' @import dplyr
 # Ensure data is a data frame
 
 na_summary <- function(data) {
@@ -64,9 +65,18 @@ na_summary <- function(data) {
 }
 
 
-#This functions enables you to visualize the numeric data
-# It returns a plot that shows the distribution (histogram) of each of the columns
-# it also computes all the outliers using the z-score and shows them in red
+
+#' Provides a visualization the numeric data
+#' @name visualize_outliers
+#' @param df2 A NFL Dataset
+#' @param z_threshold Cutoff for outlier detection
+#' @param ... Dataframe columns
+#' @return returns a plot that shows the distribution of each of the columns, and computes outliers using z-score and plots in red
+#' @import patchwork
+#' @import ggplot2
+# Ensure data is a data frame
+
+
 visualize_outliers <- function(df2, ..., z_threshold = 3) {
   # Ensure the input is a data frame
   if (!is.data.frame(df2)) {
@@ -150,6 +160,13 @@ visualize_outliers <- function(df2, ..., z_threshold = 3) {
 }
 visualize_outliers(df, "yardsToGo", "PassLength", "YardsAfterCatch")
 
+
+#' Corrects for the way the NFL counts yardline by calculates true distance from the team's endzone to current position
+#' @name true_yardline
+#' @param data A dataframe containing possession yardline
+#' @param possession_col Column marking which team has possession
+#' @param yardline_side_col Column marking which team's yardline is the ball on
+#' @param yardline_number_col Column marking the yardline number that the ball is on
 #NFL data idiosyncrasy: the numbering only goes up to 50 yards and then switches when you get to opponents side.
 #This computes the "true yardline"
 true_yardline <- function(data, possession_col, yardline_side_col, yardline_number_col) {

@@ -1,6 +1,7 @@
-#' Plot Mouse Body Weight Over Time by Treatment Group
-#'
-#' @param data A cleaned and ordered data frame from `clean_mouse_data`.
+#' @name plot_body_weight
+#' @title Plots body weight over time
+#' @description Plot Mouse Body Weight Over Time by Treatment Group
+#' @param data A cleaned and ordered data frame
 #' @return A ggplot object showing body weight trends over time.
 #' @import ggplot2
 

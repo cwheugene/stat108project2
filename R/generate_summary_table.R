@@ -1,6 +1,7 @@
-#' Generate a Summary Table of Average Body Weights
-#'
-#' @param data A cleaned and ordered data frame from `clean_mouse_data`.
+#' @name generate_summary_table
+#' @title Generates summary table
+#' @description Generate a Summary Table of Average Body Weights
+#' @param data A cleaned and ordered data frame
 #' @return A summary table (tibble) showing average body weights by treatment and sex.
 #' @import dplyr
 
