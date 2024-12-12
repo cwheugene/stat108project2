@@ -96,6 +96,23 @@ View(cleaned_data)
 
 The function automatically merges the three Excel sheets into a tidy dataset ready for analysis.
 
+A few other functions can be used to further correct errors in the dataset.
+
+	1.	Fixing Gender Patterns:
+The fix_gender_pattern() function ensures that gender markers in IDs follow a consistent pattern. If a single entry is mismatched within a sequence (e.g., "C57BL6J_F_01" followed by "C57BL6J_M_02" and "C57BL6J_F_03"), the function adjusts the mismatched entry to align with the others.
+
+	2.	Cleaning Mixed Columns:
+Columns that should contain numeric values but include non-numeric characters, such as units or text, can be processed with the clean_mixed_columns() function. This function removes non-numeric content and converts the cleaned values into numeric format, replacing invalid rows with NA.
+
+	3.	Detecting Outliers:
+The detect_outliers() function identifies outliers in numeric columns using either the Z-score method (mean-based) or the IQR method (median-based). Users can specify thresholds and optionally replace outliers with NA for cleaner analysis.
+
+	4.	Checking for Misspellings:
+For categorical columns, the check_misspellings() function identifies and corrects misspellings by comparing less frequent values to more common ones. It uses string similarity metrics to automatically standardize values.
+
+	5.	Dropping Large Weight Reductions:
+To handle implausible changes in weight data, the drop_large_weight_reductions() function identifies rows where the percentage reduction between measurements exceeds a user-defined threshold (default: 20%). These rows are removed, and a summary of dropped rows is returned for review.
+
 ## Step 2: Generate Statistical Summaries
 
 Use built-in functions to summarise data:
