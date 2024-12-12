@@ -51,7 +51,7 @@ install.packages("devtools")
 2. Install the Mouse Vaccine Trial package from GitHub:
 
 ```{r, eval = FALSE}
-devtools::install_github("cwheugene/whiskerTrimmer")
+devtools::install_github("cwheugene/stat108project2")
 ```
 
 3. Load the package in your R session:
@@ -84,7 +84,8 @@ The data can be cleaned and viewed with the following code:
 ```{r, eval=FALSE}
 
 # Set up the file path to the Excel document
-file_path <- "data-raw/mousedata.xlsx"
+# The actual file path will follow this structure, but might be in a different location.
+file_path <- "~username/Downloads/mousedata.xlsx"
 
 # Clean the data with the function in the package
 cleaned_data <- clean_mouse_data(file_path)

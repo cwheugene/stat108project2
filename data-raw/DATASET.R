@@ -3,34 +3,26 @@ clean_mouse_data <- function(file_path) {
   library(readxl)
   library(dplyr)
 
-  # Read in sheets from the Excel file
-  birth_data <- read_excel(file_path, sheet = "Birth")
-  body_weight_data <- read_excel(file_path, sheet = "Body Weight")
-  outcome_data <- read_excel(file_path, sheet = "Outcome")
+  # Check if file exists
+  if (!file.exists(file_path)) {
+    stop("File not found: ", file_path)
+  }
 
-  # Columns are read based on their position rather than their titles to avoid
-  # problems with typos
+  # Read in sheets with error handling
+  tryCatch({
+    birth_data <- read_excel(file_path, sheet = "Birth")
+    body_weight_data <- read_excel(file_path, sheet = "Body Weight")
+    outcome_data <- read_excel(file_path, sheet = "Outcome")
+  }, error = function(e) {
+    stop("Error reading sheets: ", e$message)
+  })
 
-  # Rename columns in 'Birth' based on their positions
+  # Rename columns
   colnames(birth_data) <- c("ID", "sex", "num", "treatment")
+  colnames(body_weight_data) <- c("ID", "weight_1", "date_1", "weight_2", "date_2", "weight_3", "date_3")
+  colnames(outcome_data) <- c("ID", "outcome_1", "date_1", "outcome_2", "date_2", "outcome_3", "date_3")
 
-  # Rename columns in 'Body Weight' based on their positions
-  colnames(body_weight_data) <- c(
-    "ID",
-    "weight_1", "date_1",
-    "weight_2", "date_2",
-    "weight_3", "date_3"
-  )
-
-  # Rename columns in 'Outcome' based on their positions
-  colnames(outcome_data) <- c(
-    "ID",
-    "outcome_1", "date_1",
-    "outcome_2", "date_2",
-    "outcome_3", "date_3"
-  )
-
-  # Convert relevant columns to appropriate types
+  # Convert relevant columns
   body_weight_data <- body_weight_data %>%
     mutate(
       weight_1 = as.numeric(weight_1),
@@ -53,27 +45,16 @@ clean_mouse_data <- function(file_path) {
     inner_join(body_weight_data, by = "ID") %>%
     inner_join(outcome_data, by = c("ID", "date_1", "date_2", "date_3"))
 
+  # Reorder columns
   ordered_data <- merged_data %>%
     select(
-      ID,
-      sex,
-      treatment,
-      weight_1,
-      outcome_1,
-      date_1,
-      weight_2,
-      outcome_2,
-      date_2,
-      weight_3,
-      outcome_3,
-      date_3
+      ID, sex, treatment,
+      weight_1, outcome_1, date_1,
+      weight_2, outcome_2, date_2,
+      weight_3, outcome_3, date_3
     )
 
   # Return cleaned and ordered dataset
   return(ordered_data)
 }
-
-clean_mouse_data(file_path)
-
-usethis::use_data(clean_mouse_data, overwrite = TRUE)
 
