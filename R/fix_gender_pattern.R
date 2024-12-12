@@ -25,7 +25,7 @@
 #'
 #' # View the corrected data
 #' print(corrected_data)
-
+library(dplyr)
 fix_gender_pattern <- function(data, column_name = "ID") {
   # Ensure the specified column exists
   if (!column_name %in% colnames(data)) {
