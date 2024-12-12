@@ -3,6 +3,7 @@
 #' @param data A cleaned and ordered data frame from `clean_mouse_data`.
 #' @return A summary table (tibble) showing average body weights by treatment and sex.
 #' @import dplyr
+
 generate_summary_table <- function(data) {
   # Load necessary library
   library(dplyr)

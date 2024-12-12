@@ -1,24 +1,44 @@
-#' Clean Data
-#' These functions fix three main typos: typos where the genders of the mice are swapped,
-#' when columns contain strings instead of numerics,
-#' as well as outliers
-#' @param data
-#' @param column_name
+#' Drop Large Weight Reductions
 #'
-#' @return
+#' Identifies and removes rows where the percentage reduction in weight between
+#' consecutive weighings exceeds a specified threshold (default: 20%).
+#'
+#' This function calculates the percentage weight reduction between specified columns,
+#' flags rows exceeding the threshold, and returns a cleaned dataset along with a summary
+#' of dropped rows.
+#'
+#' @param data A data frame containing the columns to evaluate.
+#' @param ... Columns containing weight measurements. At least two columns must be specified.
+#' @param threshold A numeric value specifying the percentage reduction threshold. Defaults to 20.
+#'
+#' @return A list with the following components:
+#' \item{Cleaned_Data}{A data frame with rows exceeding the threshold removed.}
+#' \item{Dropped_Summary}{A data frame summarizing rows that were removed, including
+#' the columns involved in the reduction and the calculated percentage reduction.}
+#'
 #' @export
 #'
 #' @examples
+#' # Example dataset
+#' data <- data.frame(
+#'   Mouse_ID = 1:5,
+#'   Weight_Day1 = c(50, 60, 55, 45, 40),
+#'   Weight_Day2 = c(45, 50, 40, 40, 35),
+#'   Weight_Day3 = c(40, 48, 38, 38, 30)
+#' )
+#'
+#' # Drop rows with a weight reduction greater than 20% between days
+#' result <- drop_large_weight_reductions(data, Weight_Day1, Weight_Day2, Weight_Day3, threshold = 20)
+#'
+#' # View cleaned data
+#' result$Cleaned_Data
+#'
+#' # View dropped rows summary
+#' result$Dropped_Summary
 
 usethis::use_package("stringdist")
 usethis::use_package("readxl")
 usethis::use_package("stringr")
-
-# Mouse data functions
-# 1. Fix gender pattern: Fixes gender when it could have been mistyped. This should fix the yellow highlight
-# 2. Clean mixed columns: removes any strings from a column that's supposed to be numeric. Should fix blue highlight
-# 3. Detect outliers: detects outliers based on either median (IQR) or mean (z-score). Best results with mean, threshold 2.2. Should fix both purple and blue highlight
-# 4. Drop large weight reductions: drops rows if weight reduction
 
 drop_large_weight_reductions <- function(data, ..., threshold = 20) {
   # Capture the column names

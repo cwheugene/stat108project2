@@ -1,3 +1,31 @@
+#' Fix Mismatched Gender Patterns in IDs
+#'
+#' This function identifies and corrects single mismatched gender entries in a specified column
+#' containing IDs. It assumes that IDs follow the pattern `Prefix_Gender_Number`, where `Gender`
+#' is represented by a single character (e.g., "M" or "F"). Mismatches are resolved by aligning
+#' the gender with the previous or next entry in the sequence.
+#'
+#' @param data A data frame containing the column to process.
+#' @param column_name A character string specifying the name of the column to fix.
+#' Defaults to `"ID"`.
+#'
+#' @return A modified data frame with corrected IDs in the specified column.
+#'
+#' @export
+#'
+#' @examples
+#' # Example dataset
+#' data <- data.frame(
+#'   ID = c("C57BL6J_M_1", "MC57BL6J_M_2", "C57BL6J_F_3", "C57BL6J_M_4"),
+#'   stringsAsFactors = FALSE
+#' )
+#'
+#' # Fix mismatched genders in the 'ID' column
+#' corrected_data <- fix_gender_pattern(data, column_name = "ID")
+#'
+#' # View the corrected data
+#' print(corrected_data)
+
 fix_gender_pattern <- function(data, column_name = "ID") {
   # Ensure the specified column exists
   if (!column_name %in% colnames(data)) {

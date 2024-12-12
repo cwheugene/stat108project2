@@ -1,3 +1,32 @@
+#' Clean Mixed Data Columns
+#'
+#' This function cleans specified columns in a data frame by removing non-numeric characters
+#' and converting them to numeric. It is useful for handling columns that contain a mix of
+#' numeric values and text, such as units or other annotations.
+#'
+#' @param data A data frame containing the columns to clean.
+#' @param ... One or more column names to clean. These columns must exist in the data frame.
+#'
+#' @return A data frame with the specified columns cleaned and converted to numeric.
+#' Rows with entirely non-numeric values in the specified columns are replaced with `NA`.
+#'
+#' @export
+#'
+#' @examples
+#' # Example dataset
+#' data <- data.frame(
+#'   ID = 1:4,
+#'   Weight = c("20g", "25", "twenty", "21lbs"),
+#'   Outcome = c("52", "63", "sixty", "fifty"),
+#'   stringsAsFactors = FALSE
+#' )
+#'
+#' # Clean the 'Weight' and 'Height' columns
+#' cleaned_data <- clean_mixed_columns(data, Weight, Height)
+#'
+#' # View the cleaned data
+#' print(cleaned_data)
+
 clean_mixed_columns <- function(data, ...) {
   # Capture the column names passed in the ellipsis
   columns <- enquos(...)
