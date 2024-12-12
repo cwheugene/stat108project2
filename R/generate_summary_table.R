@@ -6,8 +6,6 @@
 
 generate_summary_table <- function(data) {
   # Load necessary library
-  library(dplyr)
-
   # Create a summary table
   summary_table <- data %>%
     group_by(treatment, sex) %>%
