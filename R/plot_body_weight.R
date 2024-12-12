@@ -4,6 +4,7 @@
 #' @param data A cleaned and ordered data frame
 #' @return A ggplot object showing body weight trends over time.
 #' @import ggplot2
+#' @import tidyr
 
 plot_body_weight <- function(data) {
   # Load necessary library
