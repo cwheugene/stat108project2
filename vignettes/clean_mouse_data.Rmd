@@ -117,7 +117,7 @@ cleaned_data
 library(whiskerTrimmer)
 
 # Load your dataset
-mouse_data <- readxl::read_excel("data/mousedata.xlsx")
+mouse_data <- readxl::read_excel("data-raw/mousedata.xlsx")
 
 # Step 1: Fix gender patterns
 mouse_data <- fix_gender_pattern(mouse_data, "ID")
