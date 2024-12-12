@@ -68,10 +68,6 @@ na_summary <- function(data) {
 # It returns a plot that shows the distribution (histogram) of each of the columns
 # it also computes all the outliers using the z-score and shows them in red
 visualize_outliers <- function(df2, ..., z_threshold = 3) {
-  library(dplyr)
-  library(ggplot2)
-  library(patchwork)
-
   # Ensure the input is a data frame
   if (!is.data.frame(df2)) {
     return(paste(
