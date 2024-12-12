@@ -55,7 +55,7 @@ detect_outliers <- function(data, ..., method = "mean", threshold = 2.2, drop_ou
   }
 
   # Capture column names
-  columns <- enquos(...)
+  columns <- rlang::enquos(...)
   if (length(columns) == 0) {
     stop("You must specify at least one column.")
   }
@@ -66,7 +66,7 @@ detect_outliers <- function(data, ..., method = "mean", threshold = 2.2, drop_ou
 
   # Iterate over each specified column
   for (col in columns) {
-    column_name <- quo_name(col)
+    column_name <- rlang::quo_name(col)
     column_data <- data[[column_name]]
 
     # Check if the column exists and is numeric
@@ -123,7 +123,7 @@ detect_outliers <- function(data, ..., method = "mean", threshold = 2.2, drop_ou
       )
 
       # Remove outliers if drop_outliers = TRUE
-      if (drop) {
+      if (drop_outliers) {
         clean_data[[column_name]][outlier_indices] <- NA
       }
     }
