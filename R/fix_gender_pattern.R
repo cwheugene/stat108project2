@@ -5,7 +5,7 @@ fix_gender_pattern <- function(data, column_name) {
   }
 
   # Extract the column
-  ids <- data[[ID]]
+  ids <- data[[column_name]]
 
   # Parse out the relevant components of the ID
   parsed_ids <- data.frame(
@@ -35,6 +35,6 @@ fix_gender_pattern <- function(data, column_name) {
     )
 
   # Replace the original IDs with fixed IDs
-  data[[ID]] <- parsed_ids$Fixed_ID
+  data[[column_name]] <- parsed_ids$Fixed_ID
   return(data)
 }
