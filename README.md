@@ -1,6 +1,8 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
+<img src="man/figures/whiskerTrimmer.png" width="20%" style="display: block; margin: auto 0 auto auto;" />
+
 # whiskerTrimmer
 
 <!-- badges: start -->

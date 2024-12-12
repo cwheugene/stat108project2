@@ -11,7 +11,10 @@ knitr::opts_chunk$set(
   fig.path = "man/figures/README-",
   out.width = "100%"
 )
+```
 
+
+```{r, echo = FALSE, fig.align='right', out.width = "20%"}
 knitr::include_graphics("man/figures/whiskerTrimmer.png")
 ```
 
