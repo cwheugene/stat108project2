@@ -4,6 +4,8 @@
 #' @param data A cleaned and ordered data frame
 #' @return A summary table (tibble) showing average body weights by treatment and sex.
 #' @import dplyr
+#' @import tidyr
+
 
 generate_summary_table <- function(data) {
   # Load necessary library
