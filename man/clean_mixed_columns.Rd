@@ -2,10 +2,7 @@
 % Please edit documentation in R/clean_mixed_columns.R
 \name{clean_mixed_columns}
 \alias{clean_mixed_columns}
-\title{Clean Mixed Data Columns}
-\usage{
-clean_mixed_columns(data, ...)
-}
+\title{Checks and Cleans Mixed Data Type Columns}
 \arguments{
 \item{data}{A data frame containing the columns to clean.}
 
@@ -16,6 +13,11 @@ A data frame with the specified columns cleaned and converted to numeric.
 Rows with entirely non-numeric values in the specified columns are replaced with `NA`.
 }
 \description{
+Removes strings from any numeric column
+}
+\details{
+Clean Mixed Data Columns
+
 This function cleans specified columns in a data frame by removing non-numeric characters
 and converting them to numeric. It is useful for handling columns that contain a mix of
 numeric values and text, such as units or other annotations.
